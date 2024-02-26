@@ -1,3 +1,26 @@
+import CodeEditor from "@/components/CodeEditor";
+import HelperHeader from "@/components/HelperHeader";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+
 export default function Compiler() {
-  return <div>Compile</div>;
+  return (
+    <ResizablePanelGroup direction="horizontal" className="">
+      <ResizablePanel
+        defaultSize={50}
+        className="h-[calc(100dvh-60px)] min-w-[350px]">
+        <HelperHeader />
+        <CodeEditor />
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel
+        defaultSize={50}
+        className="h-[calc(100dvh-60px)] min-w-[350px]">
+        right side
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
 }
