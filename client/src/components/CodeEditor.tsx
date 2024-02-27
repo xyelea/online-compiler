@@ -20,7 +20,7 @@ export default function CodeEditor() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onChange = React.useCallback((value: string) => {
     // Mengirimkan aksi untuk memperbarui nilai kode ke toko Redux
-    dispatch(updateCodeValue({ language: currentLanguage, code: value }));
+    dispatch(updateCodeValue(value));
   }, []);
   return (
     <CodeMirror

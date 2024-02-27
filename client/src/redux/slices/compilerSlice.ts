@@ -1,54 +1,107 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction } from "@reduxjs/toolkit/react";
 
-// Definisikan tipe status untuk bagian slice (potongan) compiler
 export interface CompilerSliceStateType {
   fullCode: {
     html: string;
     css: string;
     javascript: string;
   };
-  currentLanguage: "html" | "css" | "javascript"; // Tipe untuk bahasa kode yang sedang dipilih
-  currentCode: string; // Kode yang sedang diedit saat ini
+  currentLanguage: "html" | "css" | "javascript";
+  isOwner: boolean;
 }
 
-// Inisialisasi status awal untuk bagian slice (potongan) compiler
 const initialState: CompilerSliceStateType = {
   fullCode: {
-    html: "html",
-    css: "css",
-    javascript: "javascript",
+    html: `
+<html lang="en">
+  <body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <input type="text" id="taskInput" placeholder="Enter your task">
+        <button onclick="addTask()">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
+  <script src="script.js"></script>
+  </body>
+</html>
+    `,
+    css: `
+  body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50vh;
+      margin: 0;
+    border:1px solid blue;
+  }
+
+  .container {
+      text-align: center;
+  }
+
+  input {
+      padding: 8px;
+      margin-right: 8px;
+  }
+
+  button {
+      padding: 8px;
+  }
+    `,
+    javascript: `
+    function addTask() {
+
+      var taskInput = document.getElementById('taskInput');
+      var taskList = document.getElementById('taskList');
+      if (taskInput.value !== '') {
+          var taskItem = document.createElement('li');
+          taskItem.textContent = taskInput.value;
+          taskList.appendChild(taskItem);
+          taskInput.value = '';
+
+          taskItem.addEventListener('click', function () {
+              taskList.removeChild(taskItem);
+          });
+      }
+  }
+
+    `,
   },
-  currentLanguage: "javascript", // Bahasa kode awal yang dipilih
-  currentCode: "", // Kode awal yang kosong
+  currentLanguage: "html",
+  isOwner: false,
 };
 
-// Membuat slice (potongan) compiler menggunakan createSlice dari Redux Toolkit
 const compilerSlice = createSlice({
-  name: "compilerSlice", // Nama slice
-  initialState, // Status awal
+  name: "compilerSlice",
+  initialState,
   reducers: {
-    // Aksi untuk memperbarui bahasa kode yang dipilih
     updateCurrentLanguage: (
       state,
       action: PayloadAction<CompilerSliceStateType["currentLanguage"]>
     ) => {
-      state.currentLanguage = action.payload; // Memperbarui nilai currentLanguage
+      state.currentLanguage = action.payload;
     },
-    // Aksi untuk memperbarui nilai kode dalam bahasa tertentu
-    updateCodeValue: (
+    updateCodeValue: (state, action: PayloadAction<string>) => {
+      state.fullCode[state.currentLanguage] = action.payload;
+    },
+    updateIsOwner: (state, action: PayloadAction<boolean>) => {
+      state.isOwner = action.payload;
+    },
+    updateFullCode: (
       state,
-      action: PayloadAction<{
-        language: CompilerSliceStateType["currentLanguage"];
-        code: string;
-      }>
+      action: PayloadAction<CompilerSliceStateType["fullCode"]>
     ) => {
-      const { code, language } = action.payload;
-      state.fullCode[language] = code; // Memperbarui nilai kode dalam fullCode berdasarkan bahasa yang dipilih
+      state.fullCode = action.payload;
     },
   },
 });
 
-// Ekspor reducer dari slice compiler
 export default compilerSlice.reducer;
-// Ekspor aksi (actions) dari slice compiler, termasuk updateCurrentLanguage dan updateCodeValue
-export const { updateCurrentLanguage, updateCodeValue } = compilerSlice.actions;
+export const {
+  updateCurrentLanguage,
+  updateCodeValue,
+  updateFullCode,
+  updateIsOwner,
+} = compilerSlice.actions;
